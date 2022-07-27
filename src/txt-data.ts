@@ -40,7 +40,7 @@ public async readSync (){
    return r;
 }
 
-read(){
+public read(){
     self =this;
     return new Promise((resolve,reject)=>{
     let read_stream = createReadStream(self.path);

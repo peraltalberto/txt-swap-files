@@ -1,0 +1,1 @@
+/// <reference path="txtswapfiles/index.d.ts" />
