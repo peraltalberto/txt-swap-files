@@ -1,4 +1,4 @@
-import { createReadStream } from "fs";
+import { createReadStream, writeFileSync } from "fs";
 import * as readline from "readline";
 var self:TxtData;
 
@@ -9,7 +9,30 @@ private  _result:any={};
 private header = '';
 
 constructor(private path: string, private separator:string='='){
-    self =this;
+   
+}
+public writeDataFile(data:any){
+
+    writeFileSync(this.path,this.createFilecontent(data))
+}
+private createFilecontent(data:any){
+    let content = '';
+    if(this.headers){
+      const heads =  Object.keys(data);
+        heads.forEach((cabezera)=>{
+            content += '['+cabezera+']'+'\n';
+            let palabras = Object.keys(data[cabezera]);
+            palabras.forEach((value:any)=>{
+               content+=value+this.separator+data[cabezera][value]+'\n';
+            })
+        })
+    }else{
+        let palabras = Object.keys(data);
+        palabras.forEach((value:any)=>{
+           content+=value+this.separator+data[value]+'\n';
+        })
+    }
+    return content
 }
 
 public async readSync (){
@@ -18,6 +41,7 @@ public async readSync (){
 }
 
 read(){
+    self =this;
     return new Promise((resolve,reject)=>{
     let read_stream = createReadStream(self.path);
         

@@ -48,8 +48,31 @@ var TxtData = /** @class */ (function () {
         this.headers = true;
         this._result = {};
         this.header = '';
-        self = this;
     }
+    TxtData.prototype.writeDataFile = function (data) {
+        (0, fs_1.writeFileSync)(this.path, this.createFilecontent(data));
+    };
+    TxtData.prototype.createFilecontent = function (data) {
+        var _this = this;
+        var content = '';
+        if (this.headers) {
+            var heads = Object.keys(data);
+            heads.forEach(function (cabezera) {
+                content += '[' + cabezera + ']' + '\n';
+                var palabras = Object.keys(data[cabezera]);
+                palabras.forEach(function (value) {
+                    content += value + _this.separator + data[cabezera][value] + '\n';
+                });
+            });
+        }
+        else {
+            var palabras = Object.keys(data);
+            palabras.forEach(function (value) {
+                content += value + _this.separator + data[value] + '\n';
+            });
+        }
+        return content;
+    };
     TxtData.prototype.readSync = function () {
         return __awaiter(this, void 0, void 0, function () {
             var r;
@@ -65,6 +88,7 @@ var TxtData = /** @class */ (function () {
     };
     TxtData.prototype.read = function () {
         var _this = this;
+        self = this;
         return new Promise(function (resolve, reject) {
             var read_stream = (0, fs_1.createReadStream)(self.path);
             var rl = readline.createInterface({
