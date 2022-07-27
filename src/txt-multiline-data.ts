@@ -3,7 +3,7 @@ import * as readline from "readline";
 import { imap } from "./imap";
 var self: TxtMultilineData;
 export class TxtMultilineData {
-  private selectData: { ini: number; fin: number } = undefined;
+  private selectData: { ini: number; fin: number } | undefined = undefined;
   private mapas: any = {};
   private _result: any = {};
   private _proResult: Promise<any>;
@@ -44,7 +44,6 @@ export class TxtMultilineData {
     let line = "";
     mapFile.mapa.forEach((campo) => {
       const k = Object.keys(campo)[0];
-
       line += this.addChartersLeft(data[k], campo[k]);
     });
     return line;
@@ -54,9 +53,12 @@ export class TxtMultilineData {
       throw new Error("El caracter de relleno debe ser un unico caracter");
     }
     if (!str) str = "";
-    const lstr = str.length;
-    const nadd = length - lstr;
 
+    str = str.toString();
+    const lstr = str.length;
+
+    const nadd = length - lstr;
+   
     for (let i = 0; i < nadd; i++) {
       str = charter + str;
     }
@@ -114,8 +116,8 @@ export class TxtMultilineData {
       // console.log(line);
 
       let typeData: string = line.substring(
-        self.selectData.ini,
-        self.selectData.fin
+        self.selectData!.ini,
+        self.selectData!.fin
       );
       let sourcemap: imap = self.mapas[typeData];
       let mapa: Array<any> = sourcemap.mapa;

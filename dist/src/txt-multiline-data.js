@@ -112,6 +112,7 @@ var TxtMultilineData = /** @class */ (function () {
         }
         if (!str)
             str = "";
+        str = str.toString();
         var lstr = str.length;
         var nadd = length - lstr;
         for (var i = 0; i < nadd; i++) {

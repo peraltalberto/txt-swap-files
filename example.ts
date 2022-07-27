@@ -14,7 +14,7 @@ stf.headers = true;
 stf.readSync().then(value=>console.log(value));
 */
 const valuedata = {
-        "REFERENCIA":'4384',
+        "REFERENCIA":4384,
         "MATRICULA":'1169gcb',
         "CLIENTE":'assgura',
         "MARCA":'daf',
@@ -34,7 +34,7 @@ const valuedata = {
 
 const mlfe = new TxtMultilineData("entrada.txt")
 mlfe.appendSingelData('entrada.map',valuedata);
-mlfe.removeDataFile('entrada.map','43484');
+//mlfe.removeDataFile('entrada.map','43484');
 /*
 let data = {
         HEADER: {
