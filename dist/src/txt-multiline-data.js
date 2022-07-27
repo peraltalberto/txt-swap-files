@@ -65,10 +65,35 @@ var TxtMultilineData = /** @class */ (function () {
             });
         });
     };
+    TxtMultilineData.prototype.removeDataFile = function (mapa, pk) {
+        return __awaiter(this, void 0, void 0, function () {
+            var r, k, content;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.read(mapa);
+                        return [4 /*yield*/, this.resultSync()];
+                    case 1:
+                        r = _a.sent();
+                        delete r[pk];
+                        k = Object.keys(r);
+                        content = '';
+                        k.forEach(function (insp) {
+                            r[insp].forEach(function (dataline) {
+                                content += _this.createLine(_this.mapas, dataline) + "\n";
+                            });
+                        });
+                        (0, fs_1.writeFileSync)(this.path, content, "utf8");
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     TxtMultilineData.prototype.appendSingelData = function (mapFile, data) {
         var dataRaw = (0, fs_1.readFileSync)(mapFile, "utf8");
         var m = JSON.parse(dataRaw);
-        var line = this.createLine(m, data) + '\n';
+        var line = this.createLine(m, data) + "\n";
         (0, fs_1.appendFileSync)(this.path, line, "utf8");
     };
     TxtMultilineData.prototype.createLine = function (mapFile, data) {
@@ -86,7 +111,7 @@ var TxtMultilineData = /** @class */ (function () {
             throw new Error("El caracter de relleno debe ser un unico caracter");
         }
         if (!str)
-            str = '';
+            str = "";
         var lstr = str.length;
         var nadd = length - lstr;
         for (var i = 0; i < nadd; i++) {
@@ -99,6 +124,7 @@ var TxtMultilineData = /** @class */ (function () {
         self = this;
         this.mapFiles = mapFiles;
         if (Array.isArray(this.mapFiles)) {
+            console.log('array multilina');
             this.mapFiles.forEach(function (maped) {
                 var dataRaw = (0, fs_1.readFileSync)(maped, "utf8");
                 var m = JSON.parse(dataRaw);
@@ -111,6 +137,17 @@ var TxtMultilineData = /** @class */ (function () {
                 _this.selectData = m.selectData;
             });
             this._proResult = new Promise(this.multimap);
+        }
+        else {
+            if (typeof mapFiles === "string") {
+                var dataRaw = (0, fs_1.readFileSync)(mapFiles, "utf8");
+                var m = JSON.parse(dataRaw);
+                this.mapas = m;
+                this._proResult = new Promise(this.singelmap);
+            }
+            else {
+                throw new Error("El tipo de ruta no es posible tratarlo.");
+            }
         }
     };
     TxtMultilineData.prototype.multimap = function (resolve, reject) {
@@ -130,10 +167,47 @@ var TxtMultilineData = /** @class */ (function () {
         rl.on("line", function (line) { return __awaiter(_this, void 0, void 0, function () {
             var typeData, sourcemap, mapa, cursor, prueba, i, key, size;
             return __generator(this, function (_a) {
-                // console.log(line);
-                console.log(line);
                 typeData = line.substring(self.selectData.ini, self.selectData.fin);
                 sourcemap = self.mapas[typeData];
+                mapa = sourcemap.mapa;
+                cursor = 0;
+                prueba = {};
+                for (i = 0; i < mapa.length; i++) {
+                    key = Object.keys(mapa[i])[0];
+                    size = mapa[i][key];
+                    // console.log(line.substring(cursor, curson+parseInt(size)).trim())
+                    prueba[key] = line.substring(cursor, cursor + parseInt(size)).trim();
+                    //console.log(prueba[key]);
+                    cursor += parseInt(size);
+                }
+                if (!self._result[prueba[sourcemap.primariKey]]) {
+                    self._result[prueba[sourcemap.primariKey]] = [];
+                }
+                self._result[prueba[sourcemap.primariKey]].push(prueba);
+                return [2 /*return*/];
+            });
+        }); });
+    };
+    TxtMultilineData.prototype.singelmap = function (resolve, reject) {
+        var _this = this;
+        var read_stream = (0, fs_1.createReadStream)(self.path);
+        var rl = readline.createInterface({
+            input: read_stream,
+        });
+        rl.on("error", function (err) {
+            //  console.log("end..",TxtMultilineData.result);
+            reject(err);
+        });
+        rl.on("close", function () {
+            //  console.log("end..",TxtMultilineData.result);
+            resolve(self._result);
+        });
+        rl.on("line", function (line) { return __awaiter(_this, void 0, void 0, function () {
+            var sourcemap, mapa, cursor, prueba, i, key, size;
+            return __generator(this, function (_a) {
+                // console.log(line);
+                console.log(self.mapas);
+                sourcemap = self.mapas;
                 mapa = sourcemap.mapa;
                 cursor = 0;
                 prueba = {};

@@ -1,4 +1,4 @@
-import { appendFileSync, createReadStream, fstat, readFileSync } from "fs";
+import { appendFileSync, createReadStream, fstat, readFileSync, writeFileSync } from "fs";
 import * as readline from "readline";
 import { imap } from "./imap";
 var self: TxtMultilineData;
@@ -15,18 +15,29 @@ export class TxtMultilineData {
     return this._proResult;
   }
 
-  constructor(private path: string) {
-    
-  }
+  constructor(private path: string) {}
 
   public async resultSync() {
     return await this._proResult;
   }
 
+  public async removeDataFile(mapa:string, pk:string){
+        this.read(mapa);
+        let r = await this.resultSync();
+        delete r[pk];
+        const k = Object.keys(r);
+        let content = '' ;
+        k.forEach((insp)=>{
+            r[insp].forEach((dataline:any)=>{
+                content += this.createLine(this.mapas,dataline)+ "\n"
+            })
+        })
+        writeFileSync(this.path,content,"utf8");
+  }
   public appendSingelData(mapFile: string, data: any) {
     let dataRaw = readFileSync(mapFile, "utf8");
     let m = JSON.parse(dataRaw);
-    let line = this.createLine(m, data)+'\n';
+    let line = this.createLine(m, data) + "\n";
     appendFileSync(this.path, line, "utf8");
   }
   private createLine(mapFile: imap, data: any) {
@@ -42,8 +53,7 @@ export class TxtMultilineData {
     if (charter.length != 1) {
       throw new Error("El caracter de relleno debe ser un unico caracter");
     }
-    if(!str)
-        str = '' ;
+    if (!str) str = "";
     const lstr = str.length;
     const nadd = length - lstr;
 
@@ -57,6 +67,7 @@ export class TxtMultilineData {
     self = this;
     this.mapFiles = mapFiles;
     if (Array.isArray(this.mapFiles)) {
+        console.log('array multilina');
       this.mapFiles.forEach((maped: string) => {
         let dataRaw = readFileSync(maped, "utf8");
         let m = JSON.parse(dataRaw);
@@ -73,8 +84,16 @@ export class TxtMultilineData {
         this.mapas[typed] = m;
         this.selectData = m.selectData;
       });
-
       this._proResult = new Promise(this.multimap);
+    } else {
+      if (typeof mapFiles === "string") {
+        let dataRaw = readFileSync(mapFiles, "utf8");
+        let m = JSON.parse(dataRaw);
+        this.mapas =m;
+        this._proResult = new Promise(this.singelmap);
+      } else {
+        throw new Error("El tipo de ruta no es posible tratarlo.");
+      }
     }
   }
 
@@ -93,12 +112,49 @@ export class TxtMultilineData {
     });
     rl.on("line", async (line) => {
       // console.log(line);
-      console.log(line)
+
       let typeData: string = line.substring(
         self.selectData.ini,
         self.selectData.fin
       );
       let sourcemap: imap = self.mapas[typeData];
+      let mapa: Array<any> = sourcemap.mapa;
+      let cursor = 0;
+      let prueba: any = {};
+
+      for (let i = 0; i < mapa.length; i++) {
+        const key = Object.keys(mapa[i])[0];
+        const size = mapa[i][key];
+        // console.log(line.substring(cursor, curson+parseInt(size)).trim())
+        prueba[key] = line.substring(cursor, cursor + parseInt(size)).trim();
+        //console.log(prueba[key]);
+        cursor += parseInt(size);
+      }
+
+      if (!self._result[prueba[sourcemap.primariKey]]) {
+        self._result[prueba[sourcemap.primariKey]] = [];
+      }
+      self._result[prueba[sourcemap.primariKey]].push(prueba);
+      //console.log( this.result[prueba[sourcemap.primariKey]]);
+    });
+  }
+  private singelmap(resolve: any, reject: any) {
+    let read_stream = createReadStream(self.path);
+    let rl = readline.createInterface({
+      input: read_stream,
+    });
+    rl.on("error", (err) => {
+      //  console.log("end..",TxtMultilineData.result);
+      reject(err);
+    });
+    rl.on("close", () => {
+      //  console.log("end..",TxtMultilineData.result);
+      resolve(self._result);
+    });
+    rl.on("line", async (line) => {
+      // console.log(line);
+        console.log(self.mapas)
+      let sourcemap: imap = self.mapas;
       let mapa: Array<any> = sourcemap.mapa;
       let cursor = 0;
       let prueba: any = {};

@@ -5,14 +5,16 @@ import { TxtMultilineData } from "./";
 const mlf = new TxtMultilineData("salida.txt")
 mlf.read(["diesel.map","gasolina.map","sonido.map"])
 mlf.result.then((value)=>console.log(value))
-*/
+
+const mlfe = new TxtMultilineData("entrada.txt")
+mlfe.removeDataFile('entrada.map','43444');
 
 const stf = new TxtData("202246020000039568");
 stf.headers = true;
 stf.readSync().then(value=>console.log(value));
-
+*/
 const valuedata = {
-        "REFERENCIA":'43444',
+        "REFERENCIA":'4384',
         "MATRICULA":'1169gcb',
         "CLIENTE":'assgura',
         "MARCA":'daf',
@@ -29,8 +31,11 @@ const valuedata = {
         "RMP_ACELERADO":'',
         "DEMAS":''
 }
+
 const mlfe = new TxtMultilineData("entrada.txt")
 mlfe.appendSingelData('entrada.map',valuedata);
+mlfe.removeDataFile('entrada.map','43484');
+/*
 let data = {
         HEADER: {
           '10050': '',
@@ -119,3 +124,4 @@ let data = {
       const stfw = new TxtData("6667");
       stfw.headers = true;
       stfw.writeDataFile(data);
+      */

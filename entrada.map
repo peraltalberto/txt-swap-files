@@ -1,4 +1,6 @@
-{      "mapa":[
+{   
+    "primariKey":"REFERENCIA",   
+    "mapa":[
         {"REFERENCIA":10},
         {"MATRICULA":11},
         {"CLIENTE":30},
