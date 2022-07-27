@@ -1,6 +1,6 @@
 {
   "name": "txtswapfiles",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "lectura y escritura de ficheros de texto plano para el intercambio de datos entre aplicaciones",
   "main": "index.js",
   "scripts": {
