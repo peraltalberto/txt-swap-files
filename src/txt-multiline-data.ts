@@ -29,7 +29,7 @@ export class TxtMultilineData {
         let content = '' ;
         k.forEach((insp)=>{
             r[insp].forEach((dataline:any)=>{
-                content += this.createLine(this.mapas,dataline)+ "\n"
+                content += this.createLine(this.mapas,dataline)+ "\r\n"
             })
         })
         writeFileSync(this.path,content,"utf8");
@@ -37,7 +37,7 @@ export class TxtMultilineData {
   public appendSingelData(mapFile: string, data: any) {
     let dataRaw = readFileSync(mapFile, "utf8");
     let m = JSON.parse(dataRaw);
-    let line = this.createLine(m, data) + "\n";
+    let line = this.createLine(m, data) + "\r\n";
     appendFileSync(this.path, line, "utf8");
   }
   private createLine(mapFile: imap, data: any) {
