@@ -81,7 +81,7 @@ var TxtMultilineData = /** @class */ (function () {
                         content = '';
                         k.forEach(function (insp) {
                             r[insp].forEach(function (dataline) {
-                                content += _this.createLine(_this.mapas, dataline) + "\n";
+                                content += _this.createLine(_this.mapas, dataline) + "\r\n";
                             });
                         });
                         (0, fs_1.writeFileSync)(this.path, content, "utf8");
@@ -93,7 +93,7 @@ var TxtMultilineData = /** @class */ (function () {
     TxtMultilineData.prototype.appendSingelData = function (mapFile, data) {
         var dataRaw = (0, fs_1.readFileSync)(mapFile, "utf8");
         var m = JSON.parse(dataRaw);
-        var line = this.createLine(m, data) + "\n";
+        var line = this.createLine(m, data) + "\r\n";
         (0, fs_1.appendFileSync)(this.path, line, "utf8");
     };
     TxtMultilineData.prototype.createLine = function (mapFile, data) {
